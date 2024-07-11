@@ -11,22 +11,27 @@ public class combination_sum {
             combination.add(candidates[i]);
 
             for (int j = 0; j < candidates.length; j++) {
-                if (target % candidates[i] == 0) {
+                if ((target - sum) % candidates[i] == 0) {
                     while (sum + candidates[j] <= target) {
                         sum += candidates[j];
                         combination.add(candidates[j]);
                     }
                 } 
-                else if (sum + candidates[j] <= target) {
+                else if (sum + candidates[j] <= target && (!(target - (sum +candidates[j]) <= candidates[j]) || target - (sum +candidates[j]) == 0)) {
                     sum += candidates[j];
                     combination.add(candidates[j]);
-                    // combination.sort(null);
                 }
+                combination.sort(null);
                 if (sum == target) {
                     if (!all_combinations.contains(combination)) all_combinations.add(combination);
                 }
             }
         }
         return all_combinations;
+    }
+    
+    public static void main(String[] args) {
+        int[] candidates = {2,3};
+        System.out.println(combinationSum(candidates, 6));
     }
 }
