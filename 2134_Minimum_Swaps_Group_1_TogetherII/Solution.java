@@ -1,42 +1,44 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 class Solution {
     public int minSwaps(int[] nums) {
-        List<Integer> indexList = new ArrayList<>();
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] == 1)
-                indexList.add(i);
-        }
+        // using sliding window
+        int n = nums.length;
+        int numOfOnes = 0;
 
-        boolean grouped = false;
-        int maxGroupedIndex = 0;
-        int maxAmountGrouped = 0;
-        for (int j = 0; j < indexList.size(); j++) {
-            int i = j;
-            int amountGrouped = 0;
-            while (i < indexList.size() - 1) {
-                if (!((indexList.get(i) + 1) % nums.length == indexList.get(i + 1))) {
-                    grouped = false;
-                    break;
-                }
-                amountGrouped++;
-                grouped = true;
-            }
-            if (grouped)
-                return 0;
-
-            if (amountGrouped > maxAmountGrouped) {
-                maxAmountGrouped = amountGrouped;
-                maxGroupedIndex = j;
+        for (int num : nums) {
+            if (num == 1) {
+                numOfOnes++;
             }
         }
 
-        Set<Integer> swapsSet = new HashSet<>();
-        // minSwapsHelper(int[] nums, swapsSet);
-        return Collections.min(swapsSet);
+        if (numOfOnes == 0 || numOfOnes == n) {
+            return 0;
+        }
+
+        int[] extendedNums = new int[2 * n];
+        for (int i = 0; i < 2 * n; i++) {
+            extendedNums[i] = nums[i % n];
+        }
+
+        int maxOnesInWindow = 0;
+        int currentOnesInWindow = 0;
+
+        for (int i = 0; i < numOfOnes; i++) {
+            if (extendedNums[i] == 1) {
+                currentOnesInWindow++;
+            }
+        }
+        maxOnesInWindow = currentOnesInWindow;
+
+        for (int i = numOfOnes; i < 2 * n; i++) {
+            if (extendedNums[i] == 1) {
+                currentOnesInWindow++;
+            }
+            if (extendedNums[i - numOfOnes] == 1) {
+                currentOnesInWindow--;
+            }
+            maxOnesInWindow = Math.max(maxOnesInWindow, currentOnesInWindow);
+        }
+
+        return numOfOnes - maxOnesInWindow;
     }
 }
